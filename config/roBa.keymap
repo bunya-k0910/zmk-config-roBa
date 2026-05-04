@@ -72,12 +72,6 @@
             slow-release;
         };
 
-        kana_space {
-            bindings = <&to_layer_0 LANGUAGE_1>;
-            key-positions = <38 41>;
-            layers = <0>;
-            timeout-ms = <100>;
-        };
     };
 
     macros {
@@ -115,7 +109,7 @@
 &kp Q             &kp W         &kp E             &kp R                   &kp T                                                                        &kp Y        &kp U  &lt 5 I    &kp O    &lt 5 P
 &kp A             &kp S         &kp D             &kp F                   &kp G                     &none                              &kp MINUS       &kp H        &kp J  &kp K      &kp L    &kp ENTER
 &mt LEFT_SHIFT Z  &kp X         &kp C             &kp V                   &kp B                     &kp COLON                          &kp SEMICOLON   &kp N        &kp M  &kp COMMA  &kp DOT  &lt 7 SLASH
-&kp LEFT_ALT      &kp LEFT_WIN  &kp LEFT_COMMAND  &lt 1 LEFT_CONTROL       &to_layer_0 LANG2          &kp LS(LA(LC(LEFT_GUI)))            &kp LEFT_SHIFT  &lt 2 SPACE                             &none
+&kp LEFT_ALT      &kp LEFT_WIN  &kp LEFT_COMMAND  &lt_to_layer_0 1 LANG2  &kp LS(LA(LC(LEFT_GUI)))  &lt_to_layer_0 3 INT_MUHENKAN      &kp LEFT_SHIFT  &lt 2 SPACE                             &none
             >;
 
             sensor-bindings = <&rot_scroll SCRL_DOWN SCRL_UP>;
