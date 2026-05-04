@@ -19,7 +19,6 @@
     //         <&kp LEFT_ARROW>,
     //         <&kp UP_ARROW>,
     //         <&kp DOWN_ARROW>;
-
     //     tick = <10>;
     //     wait-ms = <5>;
     //     tap-ms = <5>;
@@ -92,10 +91,10 @@
 
         FUNCTION {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                       &kp F1  &kp F2  &kp F3  &kp F4  &kp F5
-&trans  &trans  &trans  &trans  &trans  &trans      &kp F13  &kp F6  &kp F7  &kp F8  &kp F9  &kp F10
-&trans  &trans  &trans  &trans  &trans  &trans      &trans   &trans  &trans  &trans  &trans  &kp F11
-&trans  &trans  &trans  &trans  &trans  &trans      &trans   &trans                          &kp F12
+&kp ESCAPE    &trans         &kp LA(BACKSPACE)  &kp LA(DELETE)  &trans                      &none           &kp LA(LEFT_ARROW)  &none         &kp LA(RIGHT_ARROW)  &kp F5
+&kp LG(LEFT)  &kp LG(RIGHT)  &kp BACKSPACE      &kp DELETE      &trans  &trans      &none   &kp LEFT_ARROW  &kp DOWN_ARROW      &kp UP_ARROW  &kp RIGHT_ARROW      &kp F10
+&trans        &trans         &trans             &trans          &trans  &trans      &trans  &trans          &trans              &trans        &trans               &kp F11
+&trans        &trans         &trans             &trans          &trans  &trans      &trans  &trans                                                                 &kp F12
             >;
         };
 
