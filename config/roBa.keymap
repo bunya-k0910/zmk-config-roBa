@@ -83,7 +83,7 @@
 &kp Q             &kp W         &kp E         &kp R                        &kp T                                                          &kp Y        &kp U  &lt 5 I    &kp O    &kp P
 &kp A             &kp S         &kp D         &kp F                        &kp G        &kp LS(LG(S))                      &kp MINUS      &kp H        &kp J  &kp K      &kp L    &kp SQT
 &mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                        &kp B        &kp COLON                          &kp SEMICOLON  &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 6 INT_HENKAN  &lt 2 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE  &lt 1 ENTER                             &kp DEL
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 1 INT_HENKAN  &lt 2 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE  &lt 1 ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
@@ -91,10 +91,10 @@
 
         FUNCTION {
             bindings = <
-&kp ESCAPE    &trans         &kp LA(BACKSPACE)  &kp LA(DELETE)  &trans                      &none           &kp LA(LEFT_ARROW)  &none         &kp LA(RIGHT_ARROW)  &kp F5
-&kp LG(LEFT)  &kp LG(RIGHT)  &kp BACKSPACE      &kp DELETE      &trans  &trans      &none   &kp LEFT_ARROW  &kp DOWN_ARROW      &kp UP_ARROW  &kp RIGHT_ARROW      &kp F10
-&trans        &trans         &trans             &trans          &trans  &trans      &trans  &trans          &trans              &trans        &trans               &kp F11
-&trans        &trans         &trans             &trans          &trans  &trans      &trans  &trans                                                                 &kp F12
+&kp ESCAPE    &trans         &kp LA(BACKSPACE)  &kp LA(DELETE)  &trans                                    &none           &kp LA(LEFT_ARROW)  &none         &kp LA(RIGHT_ARROW)  &kp F5
+&kp LG(LEFT)  &kp LG(RIGHT)  &kp BACKSPACE      &kp DELETE      &trans  &trans      &none                 &kp LEFT_ARROW  &kp DOWN_ARROW      &kp UP_ARROW  &kp RIGHT_ARROW      &kp F10
+&trans        &trans         &trans             &trans          &trans  &trans      &trans                &trans          &trans              &trans        &trans               &kp F11
+&trans        &trans         &trans             &trans          &trans  &trans      &to_layer_0 INT_KANA  &trans                                                                 &kp F12
             >;
         };
 
