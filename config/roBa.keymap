@@ -19,9 +19,9 @@
             <&kp LC(LEFT_ARROW)>,
             <&kp LS(LA(LG(LEFT_ARROW)))>,
             <&kp LS(LA(LG(RIGHT_ARROW)))>;
-        tick = <120>;
-        wait-ms = <250>;
-        tap-ms = <20>;
+        tick = <160>;
+        wait-ms = <40>;
+        tap-ms = <10>;
     };
 };
 
