@@ -10,8 +10,6 @@
 };
 
 &trackball {
-    scroll-layers = <5>;
-
     arrows {
         layers = <7>;
         bindings =
@@ -19,8 +17,8 @@
             <&kp LC(LEFT_ARROW)>,
             <&kp LS(LA(LG(LEFT_ARROW)))>,
             <&kp LS(LA(LG(RIGHT_ARROW)))>;
-        tick = <160>;
-        wait-ms = <40>;
+        tick = <400>;
+        wait-ms = <80>;
         tap-ms = <10>;
     };
 };
@@ -93,11 +91,11 @@
             tapping-term-ms = <200>;
         };
 
-        rot_scroll: rot_scroll {
-            compatible = "zmk,behavior-sensor-rotate-var";
-            #sensor-binding-cells = <2>;
-            bindings = <&msc>, <&msc>;
-            tap-ms = <20>;
+        scroll_encoder: scroll_encoder {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+            tap-ms = <1>;
         };
     };
 
@@ -112,7 +110,7 @@
 &kp LEFT_ALT      &kp LEFT_WIN  &kp LEFT_COMMAND  &lt_to_layer_0 1 LANG2  &kp LS(LA(LC(LEFT_GUI)))  &lt_to_layer_0 3 INT_MUHENKAN      &kp LEFT_SHIFT  &lt 2 SPACE                             &none
             >;
 
-            sensor-bindings = <&rot_scroll SCRL_DOWN SCRL_UP>;
+            sensor-bindings = <&scroll_encoder>;
         };
 
         cursor-kana {
