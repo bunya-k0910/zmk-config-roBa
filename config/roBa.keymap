@@ -88,15 +88,8 @@
             bindings = <&mo>, <&to_layer_0>;
 
             #binding-cells = <2>;
-            tapping-term-ms = <200>;
-        };
-
-        scroll_encoder: scroll_encoder {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
-
-            tap-ms = <1>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <300>;
         };
     };
 
@@ -111,7 +104,7 @@
 &kp LEFT_ALT      &kp LEFT_WIN  &kp LEFT_COMMAND  &lt_to_layer_0 1 LANG2  &kp LS(LA(LC(LEFT_GUI)))  &lt_to_layer_0 3 LS(LC(R))      &kp LEFT_SHIFT  &lt 2 SPACE                             &none
             >;
 
-            sensor-bindings = <&scroll_encoder>;
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
         };
 
         cursor-kana {
