@@ -56,6 +56,13 @@
             key-positions = <24 25>;
         };
 
+        kana_space {
+            bindings = <&to_layer_0 LANGUAGE_1>;
+            key-positions = <37 41>;
+            timeout-ms = <80>;
+            slow-release;
+        };
+
         mouse_left_click {
             bindings = <&mkp MB1>;
             key-positions = <18 19>;
@@ -112,7 +119,7 @@
 &kp Q             &kp W             &kp E             &kp R                   &kp T                                                                     &kp Y        &kp U  &lt 5 I    &kp O    &lt 5 P
 &kp A             &kp S             &kp D             &kp F                   &kp G                     &none                           &kp MINUS       &kp H        &kp J  &kp K      &kp L    &kp ENTER
 &mt LEFT_SHIFT Z  &kp X             &kp C             &kp V                   &kp B                     &kp TAB                         &kp SEMICOLON   &kp N        &kp M  &kp COMMA  &kp DOT  &lt 7 SLASH
-&kp LEFT_ALT      &kp LEFT_CONTROL  &kp LEFT_COMMAND  &lt_to_layer_0 1 LANG2  &kp LS(LA(LC(LEFT_GUI)))  &lt_to_layer_0 3 LS(LC(R))      &kp LEFT_SHIFT  &lt 2 SPACE                             &kp ESC
+&kp LEFT_ALT      &kp LEFT_CONTROL  &kp LEFT_COMMAND  &lt_to_layer_0 1 LANG2  &kp LS(LA(LC(LEFT_GUI)))  &lt_to_layer_0 3 LS(LC(R))      &kp LEFT_SHIFT  &lt 2 SPACE                             &kp C_PLAY_PAUSE
             >;
 
             sensor-bindings = <&scroll_encoder>;
