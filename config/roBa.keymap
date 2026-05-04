@@ -12,17 +12,17 @@
 &trackball {
     scroll-layers = <5>;
 
-    // arrows {
-    //     layers = <3>;
-    //     bindings =
-    //         <&kp RIGHT_ARROW>,
-    //         <&kp LEFT_ARROW>,
-    //         <&kp UP_ARROW>,
-    //         <&kp DOWN_ARROW>;
-    //     tick = <10>;
-    //     wait-ms = <5>;
-    //     tap-ms = <5>;
-    // };
+    arrows {
+        layers = <7>;
+        bindings =
+            <&kp LC(RIGHT_ARROW)>,
+            <&kp LC(LEFT_ARROW)>,
+            <&kp LC(UP_ARROW)>,
+            <&kp ESCAPE>;
+        tick = <30>;
+        wait-ms = <20>;
+        tap-ms = <10>;
+    };
 };
 
 / {
@@ -57,7 +57,7 @@
         mouse_left_click {
             bindings = <&mkp MB1>;
             key-positions = <18 19>;
-            layers = <0>;
+            layers = <0 4>;
             timeout-ms = <45>;
             require-prior-idle-ms = <80>;
             slow-release;
@@ -66,7 +66,7 @@
         mouse_right_click {
             bindings = <&mkp MB2>;
             key-positions = <19 20>;
-            layers = <0>;
+            layers = <0 4>;
             timeout-ms = <45>;
             require-prior-idle-ms = <80>;
             slow-release;
@@ -74,7 +74,7 @@
 
         kana_space {
             bindings = <&to_layer_0 LANGUAGE_1>;
-            key-positions = <37 41>;
+            key-positions = <38 41>;
             layers = <0>;
             timeout-ms = <100>;
         };
@@ -100,9 +100,10 @@
         };
 
         rot_scroll: rot_scroll {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+            compatible = "zmk,behavior-sensor-rotate-var";
+            #sensor-binding-cells = <2>;
+            bindings = <&msc>, <&msc>;
+            tap-ms = <20>;
         };
     };
 
@@ -113,11 +114,11 @@
             bindings = <
 &kp Q             &kp W         &kp E             &kp R                   &kp T                                                                        &kp Y        &kp U  &lt 5 I    &kp O    &lt 5 P
 &kp A             &kp S         &kp D             &kp F                   &kp G                     &none                              &kp MINUS       &kp H        &kp J  &kp K      &kp L    &kp ENTER
-&mt LEFT_SHIFT Z  &kp X         &kp C             &kp V                   &kp B                     &kp COLON                          &kp SEMICOLON   &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LEFT_ALT      &kp LEFT_WIN  &kp LEFT_COMMAND  &lt_to_layer_0 1 LANG2  &kp LS(LA(LC(LEFT_GUI)))  &lt_to_layer_0 3 INT_MUHENKAN      &kp LEFT_SHIFT  &lt 2 SPACE                             &none
+&mt LEFT_SHIFT Z  &kp X         &kp C             &kp V                   &kp B                     &kp COLON                          &kp SEMICOLON   &kp N        &kp M  &kp COMMA  &kp DOT  &lt 7 SLASH
+&kp LEFT_ALT      &kp LEFT_WIN  &kp LEFT_COMMAND  &mo 1                   &to_layer_0 LANG2          &kp LS(LA(LC(LEFT_GUI)))            &kp LEFT_SHIFT  &lt 2 SPACE                             &none
             >;
 
-            sensor-bindings = <&rot_scroll>;
+            sensor-bindings = <&rot_scroll SCRL_DOWN SCRL_UP>;
         };
 
         cursor-kana {
@@ -152,7 +153,7 @@
         MOUSE {
             bindings = <
 &trans  &trans  &trans  &trans  &trans                      &trans  &trans    &trans    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &none     &none     &none     &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans    &trans    &trans    &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                &trans
             >;
