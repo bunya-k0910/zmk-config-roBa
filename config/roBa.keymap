@@ -80,10 +80,10 @@
 
         default_layer {
             bindings = <
-&kp Q               &kp W         &kp E  &kp R                        &kp T                                                                       &kp Y      &kp U  &lt 5 I    &kp O    &kp P
-&mt LEFT_CONTROL A  &kp S         &kp D  &kp F                        &kp G                     &none                              &kp MINUS      &kp H      &kp J  &kp K      &kp L    &kp ENTER
-&mt LEFT_SHIFT Z    &kp X         &kp C  &kp V                        &kp B                     &kp COLON                          &kp SEMICOLON  &kp N      &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LEFT_ALT        &kp LEFT_WIN  &none  &lt_to_layer_0 1 INT_HENKAN  &kp LS(LA(LC(LEFT_GUI)))  &lt_to_layer_0 3 INT_MUHENKAN      &none          &kp SPACE                             &none
+&kp Q               &kp W         &kp E  &kp R                   &kp T                                                                       &kp Y      &kp U  &lt 5 I    &kp O    &kp P
+&mt LEFT_CONTROL A  &kp S         &kp D  &kp F                   &kp G                     &none                              &kp MINUS      &kp H      &kp J  &kp K      &kp L    &kp ENTER
+&mt LEFT_SHIFT Z    &kp X         &kp C  &kp V                   &kp B                     &kp COLON                          &kp SEMICOLON  &kp N      &kp M  &kp COMMA  &kp DOT  &kp SLASH
+&kp LEFT_ALT        &kp LEFT_WIN  &none  &lt_to_layer_0 1 LANG2  &kp LS(LA(LC(LEFT_GUI)))  &lt_to_layer_0 3 INT_MUHENKAN      &none          &kp SPACE                             &none
             >;
 
             sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
@@ -91,10 +91,10 @@
 
         cursor-kana {
             bindings = <
-&kp TAB       &kp LG(BACKSPACE)  &kp LA(BACKSPACE)  &kp LA(DELETE)  &trans                      &none                 &none               &none         &none            &none
-&kp LG(LEFT)  &kp LG(RIGHT)      &kp BACKSPACE      &kp DELETE      &trans  &trans      &none   &kp LEFT_ARROW        &kp DOWN_ARROW      &kp UP_ARROW  &kp RIGHT_ARROW  &none
-&trans        &trans             &trans             &trans          &trans  &trans      &trans  &trans                &kp LA(LEFT_ARROW)  &trans        &kp LA(RIGHT)    &none
-&trans        &trans             &trans             &trans          &trans  &trans      &none   &to_layer_0 INT_KANA                                                     &none
+&kp TAB       &kp LG(BACKSPACE)  &kp LA(BACKSPACE)  &kp LA(DELETE)  &trans                      &none                   &none               &none         &none            &none
+&kp LG(LEFT)  &kp LG(RIGHT)      &kp BACKSPACE      &kp DELETE      &trans  &trans      &none   &kp LEFT_ARROW          &kp DOWN_ARROW      &kp UP_ARROW  &kp RIGHT_ARROW  &none
+&trans        &trans             &trans             &trans          &trans  &trans      &trans  &trans                  &kp LA(LEFT_ARROW)  &trans        &kp LA(RIGHT)    &none
+&trans        &trans             &trans             &trans          &trans  &trans      &none   &to_layer_0 LANGUAGE_1                                                     &none
             >;
         };
 
