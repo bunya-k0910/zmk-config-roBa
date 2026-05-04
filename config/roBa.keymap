@@ -19,9 +19,9 @@
             <&kp LC(LEFT_ARROW)>,
             <&kp LS(LA(LG(LEFT_ARROW)))>,
             <&kp LS(LA(LG(RIGHT_ARROW)))>;
-        tick = <30>;
-        wait-ms = <20>;
-        tap-ms = <10>;
+        tick = <120>;
+        wait-ms = <250>;
+        tap-ms = <20>;
     };
 };
 
@@ -146,7 +146,7 @@
 
         MOUSE {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                      &trans  &trans    &trans    &mkp MB4  &mkp MB5
+&trans  &trans  &trans  &trans  &trans                      &trans  &trans    &mkp MB4  &mkp MB5  &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &none     &none     &none     &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans    &trans    &trans    &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                &trans
