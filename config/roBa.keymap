@@ -156,7 +156,7 @@
 
         MOUSE {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                      &trans  &trans  &mkp MB4  &mkp MB5  &trans
+&trans  &trans  &trans  &trans  &trans                      &trans  &trans  &kp LG(LS(LEFT_BRACKET))  &kp LG(LS(RIGHT_BRACKET))  &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &none   &none     &none     &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans    &trans    &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                              &trans
