@@ -122,7 +122,7 @@
 
         cursor-kana {
             bindings = <
-&trans                &kp LG(BACKSPACE)      &kp LA(BACKSPACE)  &kp LA(DELETE)  &trans                           &none                   &none               &none         &none            &none
+&kp LG(LS(NUMBER_2))  &kp LG(BACKSPACE)      &kp LA(BACKSPACE)  &kp LA(DELETE)  &trans                           &none                   &none               &none         &none            &none
 &kp LG(LEFT)          &kp LG(RIGHT)          &kp BACKSPACE      &kp DELETE      &trans  &trans      &none        &kp LEFT_ARROW          &kp DOWN_ARROW      &kp UP_ARROW  &kp RIGHT_ARROW  &none
 &kp LG(LEFT_BRACKET)  &kp LG(RIGHT_BRACKET)  &kp LG(LS(C))      &kp LG(LS(V))   &trans  &trans      &trans       &trans                  &kp LA(LEFT_ARROW)  &trans        &kp LA(RIGHT)    &none
 &trans                &trans                 &trans             &trans          &trans  &trans      &kp LC(TAB)  &to_layer_0 LANGUAGE_1                                                     &none
