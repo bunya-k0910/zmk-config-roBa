@@ -54,7 +54,7 @@
         kana_space {
             bindings = <&to_layer_0 LANGUAGE_1>;
             key-positions = <38 41>;
-            timeout-ms = <40>;
+            timeout-ms = <60>;
             slow-release;
         };
 
