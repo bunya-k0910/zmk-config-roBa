@@ -16,10 +16,10 @@
     arrows {
         layers = <7>;
         bindings =
-            <&kp LC(RIGHT_ARROW)>,
-            <&kp LC(LEFT_ARROW)>,
-            <&kp LS(LA(LG(LEFT_ARROW)))>,
-            <&kp LS(LA(LG(RIGHT_ARROW)))>;
+            <&kp RC(RIGHT_ARROW)>,
+            <&kp RC(LEFT_ARROW)>,
+            <&kp RC(UP_ARROW)>,
+            <&kp RC(DOWN_ARROW)>;
 
         tick = <400>;
         wait-ms = <80>;
