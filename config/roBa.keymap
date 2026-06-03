@@ -21,8 +21,8 @@
             <&kp RC(UP_ARROW)>,
             <&kp RC(DOWN_ARROW)>;
 
-        tick = <100>;
-        wait-ms = <120>;
+        tick = <240>;
+        wait-ms = <160>;
         tap-ms = <30>;
     };
 };
