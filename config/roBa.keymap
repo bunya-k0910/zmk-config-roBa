@@ -21,9 +21,9 @@
             <&kp RC(UP_ARROW)>,
             <&kp RC(DOWN_ARROW)>;
 
-        tick = <400>;
-        wait-ms = <80>;
-        tap-ms = <10>;
+        tick = <100>;
+        wait-ms = <120>;
+        tap-ms = <30>;
     };
 };
 
@@ -116,6 +116,17 @@
             tapping-term-ms = <300>;
         };
 
+        trackpad_layer_tap: trackpad_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "TRACKPAD_LAYER_TAP";
+            bindings = <&mo>, <&kp>;
+
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            hold-while-undecided;
+        };
+
         scroll_encoder: scroll_encoder {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
@@ -132,7 +143,7 @@
             bindings = <
 &kp Q         &kp W             &kp E                     &kp R  &kp T                                             &kp Y        &kp U  &lt 5 I    &kp O    &lt 5 P
 &kp A         &kp S             &kp D                     &kp F  &kp G       &kp C_PLAY_PAUSE      &kp MINUS       &kp H        &kp J  &kp K      &kp L    &kp ENTER
-&kp Z         &kp X             &kp C                     &kp V  &kp B       &none                 &kp SEMICOLON   &kp N        &kp M  &kp COMMA  &kp DOT  &lt 7 SLASH
+&kp Z         &kp X             &kp C                     &kp V  &kp B       &none                 &kp SEMICOLON   &kp N        &kp M  &kp COMMA  &kp DOT  &trackpad_layer_tap 7 SLASH
 &kp LEFT_ALT  &kp LEFT_CONTROL  &kp LS(LA(LC(LEFT_GUI)))  &mo 1  &eisu_kana  &kp LEFT_COMMAND      &kp LEFT_SHIFT  &lt 2 SPACE                             &kp ESC
             >;
 
