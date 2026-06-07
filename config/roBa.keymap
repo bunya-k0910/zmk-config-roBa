@@ -51,6 +51,13 @@
             key-positions = <20 21>;
         };
 
+        question_mark {
+            bindings = <&kp LS(SLASH)>;
+            key-positions = <40 33>;
+            layers = <0>;
+            timeout-ms = <45>;
+        };
+
         kana_space {
             bindings = <&to_layer_0 LANGUAGE_1>;
             key-positions = <38 41>;
