@@ -73,15 +73,6 @@
             require-prior-idle-ms = <80>;
             slow-release;
         };
-
-        mouse_right_click {
-            bindings = <&mkp MB2>;
-            key-positions = <19 20>;
-            layers = <0 4>;
-            timeout-ms = <45>;
-            require-prior-idle-ms = <80>;
-            slow-release;
-        };
     };
 
     macros {
@@ -159,10 +150,10 @@
 
         move {
             bindings = <
-&kp LG(LS(NUMBER_2))      &kp LG(BACKSPACE)          &kp LA(BACKSPACE)  &kp LA(DELETE)  &trans                           &none                   &kp LA(LEFT_ARROW)  &none         &kp LA(RIGHT_ARROW)  &none
-&kp LG(LEFT)              &kp LG(RIGHT)              &kp BACKSPACE      &kp DELETE      &trans  &trans      &none        &kp LEFT_ARROW          &kp DOWN_ARROW      &kp UP_ARROW  &kp RIGHT_ARROW      &none
-&kp LG(LS(LEFT_BRACKET))  &kp LG(LS(RIGHT_BRACKET))  &kp LG(LS(C))      &kp LG(LS(V))   &trans  &trans      &trans       &trans                  &kp LC(M)           &trans        &trans               &none
-&kp LG(LC(LEFT_BRACKET))  &kp LG(LC(RIGHT_BRACKET))  &trans             &trans          &trans  &trans      &kp LC(TAB)  &to_layer_0 LANGUAGE_1                                                         &none
+&kp LG(LS(NUMBER_2))      &kp LG(BACKSPACE)          &kp LA(BACKSPACE)  &kp LA(DELETE)  &kp LG(RIGHT_GUI)                           &none                   &kp LA(LEFT_ARROW)  &none         &kp LA(RIGHT_ARROW)  &none
+&kp LG(LEFT)              &kp LG(RIGHT)              &kp BACKSPACE      &kp DELETE      &trans             &trans      &none        &kp LEFT_ARROW          &kp DOWN_ARROW      &kp UP_ARROW  &kp RIGHT_ARROW      &none
+&kp LG(LS(LEFT_BRACKET))  &kp LG(LS(RIGHT_BRACKET))  &kp LG(LS(C))      &kp LG(LS(V))   &trans             &trans      &trans       &trans                  &kp LC(M)           &trans        &trans               &none
+&kp LG(LC(LEFT_BRACKET))  &kp LG(LC(RIGHT_BRACKET))  &trans             &trans          &trans             &trans      &kp LC(TAB)  &to_layer_0 LANGUAGE_1                                                         &none
             >;
         };
 
