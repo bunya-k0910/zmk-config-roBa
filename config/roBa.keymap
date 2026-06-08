@@ -55,7 +55,7 @@
             bindings = <&kp LS(SLASH)>;
             key-positions = <40 33>;
             layers = <0>;
-            timeout-ms = <45>;
+            timeout-ms = <90>;
         };
 
         kana_space {
