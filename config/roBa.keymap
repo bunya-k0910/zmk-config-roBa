@@ -67,6 +67,15 @@
             require-prior-idle-ms = <80>;
             slow-release;
         };
+
+        mouse_right_click {
+            bindings = <&mkp MB2>;
+            key-positions = <19 20>;
+            layers = <0 4>;
+            timeout-ms = <45>;
+            require-prior-idle-ms = <80>;
+            slow-release;
+        };
     };
 
     macros {
