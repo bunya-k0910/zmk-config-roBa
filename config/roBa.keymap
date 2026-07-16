@@ -14,19 +14,6 @@
 };
 
 &trackball {
-    scroll_keys {
-        layers = <5>;
-        bindings =
-            <&none>,
-            <&none>,
-            <&kp C_AC_SCROLL_UP>,
-            <&kp C_AC_SCROLL_DOWN>;
-
-        tick = <80>;
-        wait-ms = <10>;
-        tap-ms = <5>;
-    };
-
     arrows {
         layers = <7>;
         bindings =
@@ -153,7 +140,7 @@
         scroll_encoder: scroll_encoder {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
-            bindings = <&kp C_AC_SCROLL_DOWN>, <&kp C_AC_SCROLL_UP>;
+            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
 
             tap-ms = <20>;
         };
