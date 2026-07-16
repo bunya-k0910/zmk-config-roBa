@@ -172,7 +172,7 @@
 
         default_layer {
             bindings = <
-&kp Q         &kp W             &kp E                     &kp R  &kp T                                             &kp Y        &kp U  &lt 5 I    &kp O    &trackpad_layer_tap 5 P
+&kp Q         &kp W             &kp E                     &kp R  &kp T                                             &kp Y        &kp U  &lt 5 I    &kp O    &lt 5 P
 &kp A         &kp S             &kp D                     &kp F  &kp G       &kp C_PLAY_PAUSE      &kp MINUS       &kp H        &kp J  &kp K      &kp L    &kp ENTER
 &kp Z         &kp X             &kp C                     &kp V  &kp B       &none                 &kp SEMICOLON   &kp N        &kp M  &kp COMMA  &kp DOT  &slash_question
 &kp LEFT_ALT  &kp LEFT_CONTROL  &kp LS(LA(LC(LEFT_GUI)))  &mo 1  &eisu_kana  &kp LEFT_COMMAND      &kp LEFT_SHIFT  &lt 2 SPACE                             &kp ESC
