@@ -44,6 +44,8 @@ static inline struct roba_drag_step roba_drag_feed(struct roba_drag_state *s,
         out.end = true;
     }
     out.delta = (next - s->offset) * ROBA_DRAG_GAIN;
+    /* User preference: invert horizontal gestures only. */
+    if (out.axis == 1) out.delta = -out.delta;
     s->offset = next;
     if (roba_drag_abs(next) == limit) out.end = true;
     if (out.end) roba_drag_reset(s);
