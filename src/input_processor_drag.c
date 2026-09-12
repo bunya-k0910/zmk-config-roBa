@@ -21,7 +21,7 @@ static int32_t frame_x, frame_y;
 static bool button_down;
 /* P and slash share a mode. Each physical press owns its own tap decision. */
 static struct held_key {
-    bool active, used, letter_pressed;
+    bool known, active, used, letter_pressed;
     uint32_t position;
 } held[2];
 
@@ -70,19 +70,26 @@ static int mode_pressed(struct zmk_behavior_binding *binding,
                        struct zmk_behavior_binding_event event) {
     if (binding->param1 != 7) return -EINVAL;
     k_mutex_lock(&drag_lock, K_FOREVER);
+    int slot = -1;
     for (int i = 0; i < ARRAY_SIZE(held); ++i) {
-        if (!held[i].active) {
-            if (!active_keys()) end_drag();
-            held[i] = (struct held_key){.active = true, .used = button_down,
-                .position = event.position};
-            zmk_keymap_layer_activate(7);
-            k_mutex_unlock(&drag_lock);
-            return 0;
-        }
+        if (held[i].known && held[i].position == event.position) { slot = i; break; }
+        if (!held[i].known && slot < 0) slot = i;
     }
+    if (slot < 0 || held[slot].active) {
+        k_mutex_unlock(&drag_lock);
+        return -ENOMEM;
+    }
+    if (!active_keys()) end_drag();
+    /* Keep the position-to-slot mapping after mode release. Standard hold-tap
+     * can release its hold before its letter's key-up; another mode key must
+     * not overwrite that letter decision in between. */
+    held[slot] = (struct held_key){.known = true, .active = true,
+        .used = button_down, .position = event.position};
+    zmk_keymap_layer_activate(7);
     k_mutex_unlock(&drag_lock);
-    return -ENOMEM;
+    return 0;
 }
+
 static int mode_released(struct zmk_behavior_binding *binding,
                         struct zmk_behavior_binding_event event) {
     k_mutex_lock(&drag_lock, K_FOREVER);
@@ -107,7 +114,7 @@ static int letter_state(struct zmk_behavior_binding *binding,
     bool forward = true;
     k_mutex_lock(&drag_lock, K_FOREVER);
     for (int i = 0; i < ARRAY_SIZE(held); ++i) {
-        if (held[i].position == event.position) {
+        if (held[i].known && held[i].position == event.position) {
             if (pressed) held[i].letter_pressed = !held[i].used;
             forward = held[i].letter_pressed;
             if (!pressed) held[i].letter_pressed = false;
