@@ -1,0 +1,3 @@
+description: Immediate gesture mode with text tap only when no gesture was used
+compatible: "roba,behavior-drag-tap"
+include: two_param.yaml

@@ -23,6 +23,10 @@
 
 / {
     input_processors {
+        roba_drag: roba_drag {
+            compatible = "roba,input-processor-drag";
+            #input-processor-cells = <0>;
+        };
         zip_scroll_x_scaler: zip_scroll_x_scaler {
             compatible = "zmk,input-processor-scaler";
             #input-processor-cells = <2>;
@@ -37,6 +41,11 @@
         compatible = "zmk,input-listener";
         device = <&trackball>;
         input-processors = <&zip_temp_layer 4 10000>;
+
+        gestures {
+            layers = <7>;
+            input-processors = <&roba_drag>;
+        };
 
         vertical_scroller {
             layers = <5>;

@@ -1,5 +1,5 @@
-if(CONFIG_SHIELD_ROBA_R)
+if(CONFIG_SHIELD_ROBA_R OR CONFIG_SHIELD_ROBA_L)
   zephyr_library()
-  zephyr_library_sources(src/input_processor_gesture.c)
+  zephyr_library_sources(src/input_processor_drag.c)
   zephyr_include_directories(${APPLICATION_SOURCE_DIR}/include)
 endif()
