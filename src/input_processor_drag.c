@@ -32,7 +32,7 @@ static int active_keys(void) { return held[0].active + held[1].active; }
 /* The existing devicetree names are retained for keymap compatibility.
  * Gestures now emit keyboard taps; no mouse button or drag report is sent. */
 static const uint32_t shortcut_codes[] = {
-    LC(RIGHT_ARROW), LC(LEFT_ARROW), LC(LA(UP_ARROW)), LC(LA(DOWN_ARROW))};
+    LC(LEFT_ARROW), LC(RIGHT_ARROW), LC(UP_ARROW), LC(DOWN_ARROW)};
 static struct roba_stroke_queue shortcuts;
 static int pressed_direction = -1;
 static int64_t next_press_at;
