@@ -12,6 +12,7 @@
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/position_state_changed.h>
 #include "gesture.h"
+#include "gesture_tap.h"
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -24,23 +25,24 @@ static const struct zmk_behavior_binding bindings[] = {
     LISTIFY(4, ZMK_KEYMAP_EXTRACT_BINDING, (,), DT_DRV_INST(0))};
 static struct roba_gesture gesture;
 static int32_t frame_x, frame_y;
-static int pending_direction = -1;
-static int pressed_direction = -1;
-static bool busy;
+static struct roba_gesture_tap tap = {.pending = -1, .pressed = -1};
 static struct zmk_behavior_binding_event tap_event;
 K_MUTEX_DEFINE(gesture_lock);
+static void press_key(struct k_work *work);
+K_WORK_DEFINE(press_work, press_key);
 
 static void release_key(struct k_work *work) {
     k_mutex_lock(&gesture_lock, K_FOREVER);
-    if (pressed_direction >= 0) {
+    if (tap.pressed >= 0) {
         tap_event.timestamp = k_uptime_get();
-        int err = zmk_behavior_invoke_binding(&bindings[pressed_direction], tap_event, false);
+        int err = zmk_behavior_invoke_binding(&bindings[tap.pressed], tap_event, false);
         if (err < 0) {
             LOG_ERR("Gesture key release failed: %d", err);
         }
-        pressed_direction = -1;
     }
-    busy = false;
+    if (roba_gesture_tap_release(&tap)) {
+        k_work_submit(&press_work);
+    }
     k_mutex_unlock(&gesture_lock);
 }
 K_WORK_DELAYABLE_DEFINE(release_work, release_key);
@@ -48,14 +50,13 @@ K_WORK_DELAYABLE_DEFINE(release_work, release_key);
 /* One pending tap at most; no repeat queue can outlive the physical gesture. */
 static void press_key(struct k_work *work) {
     k_mutex_lock(&gesture_lock, K_FOREVER);
-    if (pending_direction < 0 || !zmk_keymap_layer_active(DT_INST_PROP(0, layer))) {
-        pending_direction = -1;
-        busy = false;
+    if (!zmk_keymap_layer_active(DT_INST_PROP(0, layer))) {
+        roba_gesture_tap_cancel(&tap);
+    }
+    if (roba_gesture_tap_press(&tap) < 0) {
         k_mutex_unlock(&gesture_lock);
         return;
     }
-    pressed_direction = pending_direction;
-    pending_direction = -1;
     tap_event = (struct zmk_behavior_binding_event){
         .layer = DT_INST_PROP(0, layer),
         .position = INT32_MAX,
@@ -64,7 +65,7 @@ static void press_key(struct k_work *work) {
         .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
 #endif
     };
-    int err = zmk_behavior_invoke_binding(&bindings[pressed_direction], tap_event, true);
+    int err = zmk_behavior_invoke_binding(&bindings[tap.pressed], tap_event, true);
     if (err < 0) {
         LOG_ERR("Gesture key press failed: %d", err);
     }
@@ -72,7 +73,6 @@ static void press_key(struct k_work *work) {
     k_work_reschedule(&release_work, K_MSEC(DT_INST_PROP(0, tap_ms)));
     k_mutex_unlock(&gesture_lock);
 }
-K_WORK_DEFINE(press_work, press_key);
 
 static int layer_changed(const zmk_event_t *event) {
     const struct zmk_layer_state_changed *change = as_zmk_layer_state_changed(event);
@@ -80,7 +80,7 @@ static int layer_changed(const zmk_event_t *event) {
         k_mutex_lock(&gesture_lock, K_FOREVER);
         roba_gesture_reset(&gesture);
         frame_x = frame_y = 0;
-        pending_direction = -1;
+        roba_gesture_tap_cancel(&tap);
         /* A key already pressed must still receive its scheduled release. */
         k_mutex_unlock(&gesture_lock);
     }
@@ -114,9 +114,7 @@ static int handle_event(const struct device *dev, struct input_event *event,
         int direction = roba_gesture_feed(&gesture, frame_x, frame_y, k_uptime_get(),
                                           DT_INST_PROP(0, threshold), DT_INST_PROP(0, idle_ms));
         frame_x = frame_y = 0;
-        if (direction >= 0 && !busy) {
-            busy = true;
-            pending_direction = direction;
+        if (direction >= 0 && roba_gesture_tap_submit(&tap, direction)) {
             k_work_submit(&press_work);
         }
     }

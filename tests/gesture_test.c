@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include "../src/gesture.h"
+#include "../src/gesture_tap.h"
 
 static struct roba_gesture state;
 static int feed(int x, int y, int64_t time) {
@@ -53,5 +54,33 @@ int main(void) {
     assert(feed(100, 0, 1001) == -1);
     assert(feed(140, 0, 1002) == -1);
     assert(feed(1, 0, 1003) == 0);
+    /* Release/repress while the old key is still down: the new vertical
+     * gesture must run after release even if no more movement arrives. */
+    struct roba_gesture_tap tap = {.pending = -1, .pressed = -1};
+    roba_gesture_reset(&state);
+    assert(roba_gesture_tap_submit(&tap, feed(241, 0, 2000)));
+    assert(roba_gesture_tap_press(&tap) == 0);
+    roba_gesture_reset(&state);
+    roba_gesture_tap_cancel(&tap);
+    assert(!roba_gesture_tap_submit(&tap, feed(0, -241, 2010)));
+    assert(tap.pending == 2 && tap.pressed == 0);
+    assert(roba_gesture_tap_press(&tap) == -1);
+    assert(roba_gesture_tap_release(&tap));
+    assert(roba_gesture_tap_press(&tap) == 2);
+    assert(!roba_gesture_tap_release(&tap));
+    assert(feed(0, -1000, 2040) == -1);
+
+    /* Releasing before queued work runs cancels it, including while another
+     * key is down; cancellation never discards the old key's release. */
+    assert(roba_gesture_tap_submit(&tap, 1));
+    roba_gesture_tap_cancel(&tap);
+    assert(roba_gesture_tap_press(&tap) == -1);
+    assert(roba_gesture_tap_submit(&tap, 0));
+    assert(roba_gesture_tap_press(&tap) == 0);
+    assert(!roba_gesture_tap_submit(&tap, 3));
+    roba_gesture_tap_cancel(&tap);
+    assert(tap.pressed == 0);
+    assert(!roba_gesture_tap_release(&tap));
+    assert(roba_gesture_tap_press(&tap) == -1);
     puts("gesture tests passed");
 }
