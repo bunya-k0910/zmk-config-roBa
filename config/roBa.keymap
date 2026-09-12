@@ -14,21 +14,6 @@
 };
 
 / {
-    input_processors {
-        roba_gesture: roba_gesture {
-            compatible = "roba,input-processor-gesture";
-            #input-processor-cells = <0>;
-            layer = <7>;
-            bindings = <&kp RC(RIGHT_ARROW)>, <&kp RC(LEFT_ARROW)>,
-                       <&kp RC(UP_ARROW)>, <&kp RC(DOWN_ARROW)>;
-            threshold = <240>;
-            idle-ms = <350>;
-            tap-ms = <30>;
-        };
-    };
-};
-
-/ {
     combos {
         compatible = "zmk,combos";
 
@@ -136,7 +121,7 @@
         trackpad_layer_tap: trackpad_layer_tap {
             compatible = "zmk,behavior-hold-tap";
             label = "TRACKPAD_LAYER_TAP";
-            bindings = <&mo>, <&kp>;
+            bindings = <&mkp>, <&kp>;
 
             #binding-cells = <2>;
             flavor = "tap-preferred";
@@ -147,7 +132,7 @@
         slash_question: slash_question {
             compatible = "zmk,behavior-mod-morph";
             label = "SLASH_QUESTION";
-            bindings = <&trackpad_layer_tap 7 SLASH>, <&kp LS(SLASH)>;
+            bindings = <&trackpad_layer_tap MB3 SLASH>, <&kp LS(SLASH)>;
 
             #binding-cells = <0>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
@@ -175,7 +160,7 @@
 
         default_layer {
             bindings = <
-&kp Q         &kp W             &kp E                     &kp R  &kp T                                             &kp Y        &kp U  &lt 5 I    &kp O    &trackpad_layer_tap 7 P
+&kp Q         &kp W             &kp E                     &kp R  &kp T                                             &kp Y        &kp U  &lt 5 I    &kp O    &trackpad_layer_tap MB3 P
 &kp A         &kp S             &kp D                     &kp F  &kp G       &kp C_PLAY_PAUSE      &kp MINUS       &kp H        &kp J  &kp K      &kp L    &kp ENTER
 &kp Z         &kp X             &kp C                     &kp V  &kp B       &none                 &kp SEMICOLON   &kp N        &kp M  &kp COMMA  &kp DOT  &slash_question
 &kp LEFT_ALT  &kp LEFT_CONTROL  &kp LS(LA(LC(LEFT_GUI)))  &mo 1  &eisu_kana  &kp LEFT_COMMAND      &kp LEFT_SHIFT  &lt 2 SPACE                             &kp ESC

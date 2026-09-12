@@ -38,11 +38,6 @@
         device = <&trackball>;
         input-processors = <&zip_temp_layer 4 10000>;
 
-        gestures {
-            layers = <7>;
-            input-processors = <&roba_gesture>;
-        };
-
         vertical_scroller {
             layers = <5>;
             input-processors = <
