@@ -1,5 +1,14 @@
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
+  gesture-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test gesture recognition
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined tests/gesture_test.c -o /tmp/gesture-test
+          /tmp/gesture-test
   build:
+    needs: gesture-test
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3-branch

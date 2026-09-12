@@ -1,0 +1,19 @@
+description: One-shot Mission Control and idle-rearmed desktop gestures
+compatible: "roba,input-processor-gesture"
+include: ip_zero_param.yaml
+properties:
+  layer:
+    type: int
+    required: true
+  bindings:
+    type: phandle-array
+    required: true
+  threshold:
+    type: int
+    required: true
+  idle-ms:
+    type: int
+    required: true
+  tap-ms:
+    type: int
+    required: true

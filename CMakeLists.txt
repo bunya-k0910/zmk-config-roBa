@@ -1,0 +1,5 @@
+if(CONFIG_SHIELD_ROBA_R)
+  zephyr_library()
+  zephyr_library_sources(src/input_processor_gesture.c)
+  zephyr_include_directories(${APPLICATION_SOURCE_DIR}/include)
+endif()

@@ -13,18 +13,18 @@
     quick-tap-ms = <0>;
 };
 
-&trackball {
-    arrows {
-        layers = <7>;
-        bindings =
-            <&kp RC(RIGHT_ARROW)>,
-            <&kp RC(LEFT_ARROW)>,
-            <&kp RC(UP_ARROW)>,
-            <&kp RC(DOWN_ARROW)>;
-
-        tick = <240>;
-        wait-ms = <160>;
-        tap-ms = <30>;
+/ {
+    input_processors {
+        roba_gesture: roba_gesture {
+            compatible = "roba,input-processor-gesture";
+            #input-processor-cells = <0>;
+            layer = <7>;
+            bindings = <&kp RC(RIGHT_ARROW)>, <&kp RC(LEFT_ARROW)>,
+                       <&kp RC(UP_ARROW)>, <&kp RC(DOWN_ARROW)>;
+            threshold = <240>;
+            idle-ms = <350>;
+            tap-ms = <30>;
+        };
     };
 };
 
