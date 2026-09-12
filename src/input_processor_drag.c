@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 #define DT_DRV_COMPAT roba_input_processor_drag
+#include <limits.h>
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/logging/log.h>
@@ -7,18 +8,19 @@
 #include <drivers/input_processor.h>
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>
-#include <zmk/hid.h>
-#include <zmk/endpoints.h>
+#include <dt-bindings/zmk/keys.h>
 #include <zmk/keymap.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/layer_state_changed.h>
-#include "gesture_drag.h"
+#include <zmk/events/position_state_changed.h>
+#include "gesture_stroke.h"
+#include "gesture_queue.h"
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 K_MUTEX_DEFINE(drag_lock);
-static struct roba_drag_state drag;
+static struct roba_stroke stroke = {.direction = -1};
 static int32_t frame_x, frame_y;
-static bool button_down;
+
 /* P and slash share a mode. Each physical press owns its own tap decision. */
 static struct held_key {
     bool known, active, used, letter_pressed;
@@ -27,43 +29,79 @@ static struct held_key {
 
 static int active_keys(void) { return held[0].active + held[1].active; }
 
-static int send_motion(int32_t delta, int axis) {
-    zmk_hid_mouse_movement_set(axis == 1 ? delta : 0, axis == 2 ? delta : 0);
-    int err = zmk_endpoints_send_mouse_report();
-    zmk_hid_mouse_movement_set(0, 0);
-    if (err < 0) LOG_WRN("Gesture mouse report failed: %d", err);
-    return err;
-}
-static void end_drag(void) {
-    if (button_down) {
-        zmk_hid_mouse_button_release(2);
-        button_down = false;
-        send_motion(0, 0);
+/* The existing devicetree names are retained for keymap compatibility.
+ * Gestures now emit keyboard taps; no mouse button or drag report is sent. */
+static const uint32_t shortcut_codes[] = {
+    LC(RIGHT_ARROW), LC(LEFT_ARROW), LC(LA(UP_ARROW)), LC(LA(DOWN_ARROW))};
+static struct roba_stroke_queue shortcuts;
+static int pressed_direction = -1;
+static int64_t next_press_at;
+static struct zmk_behavior_binding shortcut_binding;
+static struct zmk_behavior_binding_event shortcut_event;
+static void press_shortcut(struct k_work *work);
+K_WORK_DELAYABLE_DEFINE(press_work, press_shortcut);
+
+static void release_shortcut(struct k_work *work) {
+    k_mutex_lock(&drag_lock, K_FOREVER);
+    if (pressed_direction >= 0) {
+        shortcut_event.timestamp = k_uptime_get();
+        int err = zmk_behavior_invoke_binding(&shortcut_binding, shortcut_event, false);
+        if (err < 0) LOG_ERR("Gesture shortcut release failed: %d", err);
+        pressed_direction = -1;
     }
-    roba_drag_reset(&drag);
+    next_press_at = k_uptime_get() + 10;
+    if (shortcuts.count) k_work_reschedule(&press_work, K_MSEC(10));
+    k_mutex_unlock(&drag_lock);
+}
+K_WORK_DELAYABLE_DEFINE(release_work, release_shortcut);
+
+static void press_shortcut(struct k_work *work) {
+    k_mutex_lock(&drag_lock, K_FOREVER);
+    if (pressed_direction >= 0) {
+        k_mutex_unlock(&drag_lock);
+        return;
+    }
+    pressed_direction = roba_stroke_dequeue(&shortcuts);
+    if (pressed_direction >= 0) {
+        shortcut_binding = (struct zmk_behavior_binding){
+            .behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)),
+            .param1 = shortcut_codes[pressed_direction]};
+        shortcut_event = (struct zmk_behavior_binding_event){
+            .layer = 7, .position = INT32_MAX, .timestamp = k_uptime_get(),
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+            .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
+#endif
+        };
+        int err = zmk_behavior_invoke_binding(&shortcut_binding, shortcut_event, true);
+        if (err < 0) LOG_ERR("Gesture shortcut press failed: %d", err);
+        /* Always release, including after a partially successful press. */
+        k_work_reschedule(&release_work, K_MSEC(30));
+    }
+    k_mutex_unlock(&drag_lock);
+}
+
+static void reset_gesture(void) {
+    roba_stroke_reset(&stroke);
     frame_x = frame_y = 0;
+    /* Already recognized strokes finish their short key taps even if P is
+     * released before work runs. A release never triggers a new shortcut. */
 }
 
 static void process_frame(int32_t x, int32_t y) {
-    struct roba_drag_step step = roba_drag_feed(&drag, x, y);
-    if (step.begin) {
+    int direction = roba_stroke_feed(&stroke, x, y, k_uptime_get());
+    if (stroke.engaged) {
         for (int i = 0; i < ARRAY_SIZE(held); ++i)
             if (held[i].active) held[i].used = true;
-        zmk_hid_mouse_button_press(2);
-        button_down = true;
-        if (send_motion(0, 0) < 0) { end_drag(); return; }
-        /* MMF 3.0.8 consumes the first >7px frame solely to choose an axis.
-         * Keep that frame separate from the actual preview displacement. */
-        if (send_motion(step.delta < 0 ? -16 : 16, step.axis) < 0) {
-            end_drag(); return;
-        }
     }
-    if (step.delta && send_motion(step.delta, step.axis) < 0) {
-        end_drag(); return;
+    if (direction < 0) return;
+    if (!roba_stroke_enqueue(&shortcuts, direction)) {
+        LOG_ERR("Gesture shortcut queue full");
+        return;
     }
-    /* This follows the final movement report, never precedes it. The next
-     * physical sensor frame may start a fresh drag with P still held. */
-    if (step.end) end_drag();
+    if (pressed_direction < 0) {
+        int64_t wait = next_press_at - k_uptime_get();
+        k_work_schedule(&press_work, K_MSEC(wait > 0 ? wait : 0));
+    }
 }
 
 static int mode_pressed(struct zmk_behavior_binding *binding,
@@ -79,12 +117,12 @@ static int mode_pressed(struct zmk_behavior_binding *binding,
         k_mutex_unlock(&drag_lock);
         return -ENOMEM;
     }
-    if (!active_keys()) end_drag();
+    if (!active_keys()) reset_gesture();
     /* Keep the position-to-slot mapping after mode release. Standard hold-tap
      * can release its hold before its letter's key-up; another mode key must
      * not overwrite that letter decision in between. */
     held[slot] = (struct held_key){.known = true, .active = true,
-        .used = button_down, .position = event.position};
+        .used = stroke.engaged, .position = event.position};
     zmk_keymap_layer_activate(7);
     k_mutex_unlock(&drag_lock);
     return 0;
@@ -100,7 +138,7 @@ static int mode_released(struct zmk_behavior_binding *binding,
         }
     }
     if (!active_keys()) {
-        end_drag();
+        reset_gesture();
         /* Zephyr mutexes allow same-thread re-entry by the synchronous layer
          * listener. Keep active-key state and layer teardown atomic. */
         zmk_keymap_layer_deactivate(7);
@@ -110,7 +148,7 @@ static int mode_released(struct zmk_behavior_binding *binding,
 }
 
 /* Preserve ZMK hold-tap's event capture and typing order. The hold branch
- * remembers whether a drag was used; only the ordinary tap is suppressed. */
+ * remembers whether a gesture was used; only the ordinary tap is suppressed. */
 static int letter_state(struct zmk_behavior_binding *binding,
                         struct zmk_behavior_binding_event event, bool pressed) {
     bool forward = true;
@@ -154,7 +192,7 @@ static int layer_changed(const zmk_event_t *event) {
     const struct zmk_layer_state_changed *change = as_zmk_layer_state_changed(event);
     if (change->layer == 7 && !change->state) {
         k_mutex_lock(&drag_lock, K_FOREVER);
-        end_drag();
+        reset_gesture();
         k_mutex_unlock(&drag_lock);
     }
     return ZMK_EV_EVENT_BUBBLE;
@@ -175,12 +213,12 @@ static int handle_event(const struct device *dev, struct input_event *event,
         return ZMK_INPUT_PROC_CONTINUE;
     }
     if (event->code == INPUT_REL_X)
-        frame_x = roba_drag_clamp((int64_t)frame_x + event->value, 32767);
+        frame_x = roba_stroke_clamp((int64_t)frame_x + event->value);
     else
-        frame_y = roba_drag_clamp((int64_t)frame_y + event->value, 32767);
+        frame_y = roba_stroke_clamp((int64_t)frame_y + event->value);
     bool sync = event->sync;
     /* v0.3 layer overrides swallow STOP. Also remove the event and sync bit
-     * so their listener cannot send a duplicate report after our ordered ones. */
+     * so their listener cannot leak pointer movement into a shortcut gesture. */
     event->value = 0;
     event->type = 0;
     event->sync = false;

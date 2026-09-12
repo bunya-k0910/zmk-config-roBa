@@ -11,6 +11,8 @@ jobs:
           /tmp/gesture-test
           cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined tests/gesture_drag_test.c -o /tmp/gesture-drag-test
           /tmp/gesture-drag-test
+          cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined tests/gesture_stroke_test.c -o /tmp/gesture-stroke-test
+          /tmp/gesture-stroke-test
   build:
     needs: gesture-test
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3-branch

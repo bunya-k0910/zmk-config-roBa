@@ -1,3 +1,3 @@
-description: Scaled mouse drags with distance-based completion while a mode key is held
+description: Stroke recognition with native keyboard shortcuts while a mode key is held
 compatible: "roba,input-processor-drag"
 include: ip_zero_param.yaml
