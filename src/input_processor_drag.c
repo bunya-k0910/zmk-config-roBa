@@ -99,11 +99,13 @@ static int mode_released(struct zmk_behavior_binding *binding,
             break;
         }
     }
-    bool last_key = !active_keys();
-    if (last_key) end_drag();
+    if (!active_keys()) {
+        end_drag();
+        /* Zephyr mutexes allow same-thread re-entry by the synchronous layer
+         * listener. Keep active-key state and layer teardown atomic. */
+        zmk_keymap_layer_deactivate(7);
+    }
     k_mutex_unlock(&drag_lock);
-    /* Layer listeners run synchronously; notify them outside our state lock. */
-    if (last_key) zmk_keymap_layer_deactivate(7);
     return 0;
 }
 
