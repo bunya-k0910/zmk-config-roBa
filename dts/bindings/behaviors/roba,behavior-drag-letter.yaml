@@ -1,0 +1,3 @@
+description: Gesture letter branch for standard hold-tap
+compatible: "roba,behavior-drag-letter"
+include: one_param.yaml

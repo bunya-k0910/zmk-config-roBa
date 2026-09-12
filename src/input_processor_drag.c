@@ -21,9 +21,8 @@ static int32_t frame_x, frame_y;
 static bool button_down;
 /* P and slash share a mode. Each physical press owns its own tap decision. */
 static struct held_key {
-    bool active, used;
+    bool active, used, letter_pressed;
     uint32_t position;
-    int64_t pressed_at;
 } held[2];
 
 static int active_keys(void) { return held[0].active + held[1].active; }
@@ -67,7 +66,7 @@ static void process_frame(int32_t x, int32_t y) {
     if (step.end) end_drag();
 }
 
-static int key_pressed(struct zmk_behavior_binding *binding,
+static int mode_pressed(struct zmk_behavior_binding *binding,
                        struct zmk_behavior_binding_event event) {
     if (binding->param1 != 7) return -EINVAL;
     k_mutex_lock(&drag_lock, K_FOREVER);
@@ -75,7 +74,7 @@ static int key_pressed(struct zmk_behavior_binding *binding,
         if (!held[i].active) {
             if (!active_keys()) end_drag();
             held[i] = (struct held_key){.active = true, .used = button_down,
-                .position = event.position, .pressed_at = event.timestamp};
+                .position = event.position};
             zmk_keymap_layer_activate(7);
             k_mutex_unlock(&drag_lock);
             return 0;
@@ -84,13 +83,11 @@ static int key_pressed(struct zmk_behavior_binding *binding,
     k_mutex_unlock(&drag_lock);
     return -ENOMEM;
 }
-static int key_released(struct zmk_behavior_binding *binding,
+static int mode_released(struct zmk_behavior_binding *binding,
                         struct zmk_behavior_binding_event event) {
-    bool tap = false;
     k_mutex_lock(&drag_lock, K_FOREVER);
     for (int i = 0; i < ARRAY_SIZE(held); ++i) {
         if (held[i].active && held[i].position == event.position) {
-            tap = !held[i].used && event.timestamp - held[i].pressed_at < 200;
             held[i].active = false;
             break;
         }
@@ -100,22 +97,49 @@ static int key_released(struct zmk_behavior_binding *binding,
     k_mutex_unlock(&drag_lock);
     /* Layer listeners run synchronously; notify them outside our state lock. */
     if (last_key) zmk_keymap_layer_deactivate(7);
-    if (tap) {
-        struct zmk_behavior_binding key = {
-            .behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = binding->param2};
-        int err = zmk_behavior_invoke_binding(&key, event, true);
-        /* Always release, including after a partially successful press. */
-        int release_err = zmk_behavior_invoke_binding(&key, event, false);
-        return err < 0 ? err : release_err;
-    }
     return 0;
 }
-static const struct behavior_driver_api key_api = {
-    .binding_pressed = key_pressed, .binding_released = key_released};
-#define DRAG_KEY_DEFINE(node) \
+
+/* Preserve ZMK hold-tap's event capture and typing order. The hold branch
+ * remembers whether a drag was used; only the ordinary tap is suppressed. */
+static int letter_state(struct zmk_behavior_binding *binding,
+                        struct zmk_behavior_binding_event event, bool pressed) {
+    bool forward = true;
+    k_mutex_lock(&drag_lock, K_FOREVER);
+    for (int i = 0; i < ARRAY_SIZE(held); ++i) {
+        if (held[i].position == event.position) {
+            if (pressed) held[i].letter_pressed = !held[i].used;
+            forward = held[i].letter_pressed;
+            if (!pressed) held[i].letter_pressed = false;
+            break;
+        }
+    }
+    k_mutex_unlock(&drag_lock);
+    if (!forward) return 0;
+    struct zmk_behavior_binding key = {
+        .behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = binding->param1};
+    return zmk_behavior_invoke_binding(&key, event, pressed);
+}
+static int letter_pressed(struct zmk_behavior_binding *binding,
+                          struct zmk_behavior_binding_event event) {
+    return letter_state(binding, event, true);
+}
+static int letter_released(struct zmk_behavior_binding *binding,
+                           struct zmk_behavior_binding_event event) {
+    return letter_state(binding, event, false);
+}
+static const struct behavior_driver_api mode_api = {
+    .binding_pressed = mode_pressed, .binding_released = mode_released};
+static const struct behavior_driver_api letter_api = {
+    .binding_pressed = letter_pressed, .binding_released = letter_released};
+#define DRAG_MODE_DEFINE(node) \
     BEHAVIOR_DT_DEFINE(node, NULL, NULL, NULL, NULL, POST_KERNEL, \
-                       CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &key_api);
-DT_FOREACH_STATUS_OKAY(roba_behavior_drag_tap, DRAG_KEY_DEFINE)
+                       CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &mode_api);
+#define DRAG_LETTER_DEFINE(node) \
+    BEHAVIOR_DT_DEFINE(node, NULL, NULL, NULL, NULL, POST_KERNEL, \
+                       CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &letter_api);
+DT_FOREACH_STATUS_OKAY(roba_behavior_drag_mode, DRAG_MODE_DEFINE)
+DT_FOREACH_STATUS_OKAY(roba_behavior_drag_letter, DRAG_LETTER_DEFINE)
 
 static int layer_changed(const zmk_event_t *event) {
     const struct zmk_layer_state_changed *change = as_zmk_layer_state_changed(event);

@@ -1,0 +1,3 @@
+description: Gesture mode branch for standard hold-tap
+compatible: "roba,behavior-drag-mode"
+include: one_param.yaml

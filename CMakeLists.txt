@@ -1,4 +1,4 @@
-if(CONFIG_SHIELD_ROBA_R OR CONFIG_SHIELD_ROBA_L)
+if(CONFIG_SHIELD_ROBA_R)
   zephyr_library()
   zephyr_library_sources(src/input_processor_drag.c)
   zephyr_include_directories(${APPLICATION_SOURCE_DIR}/include)

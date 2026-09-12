@@ -118,10 +118,24 @@
             tapping-term-ms = <300>;
         };
 
+        gesture_mode: gesture_mode {
+            compatible = "roba,behavior-drag-mode";
+            #binding-cells = <1>;
+        };
+
+        gesture_letter: gesture_letter {
+            compatible = "roba,behavior-drag-letter";
+            #binding-cells = <1>;
+        };
+
         trackpad_layer_tap: trackpad_layer_tap {
-            compatible = "roba,behavior-drag-tap";
+            compatible = "zmk,behavior-hold-tap";
             label = "TRACKPAD_LAYER_TAP";
+            bindings = <&gesture_mode>, <&gesture_letter>;
             #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            hold-while-undecided;
         };
 
         slash_question: slash_question {
