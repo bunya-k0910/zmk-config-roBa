@@ -210,7 +210,7 @@
         MOUSE {
             bindings = <
 &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans                &trans                 &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &none   &none                 &none                  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans                &trans                 &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans                &trans                 &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                                       &trans
             >;
@@ -255,5 +255,3 @@
         };
     };
 };
-
-&mkp_input_listener { input-processors = <&zip_temp_layer 4 10000>; };

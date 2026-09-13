@@ -3,10 +3,6 @@
 #include <dt-bindings/zmk/input_transform.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
-&zip_temp_layer {
-    excluded-positions = <7 8 18 19 20>;
-};
-
 &default_transform {
     col-offset = <6>;
 };
@@ -40,7 +36,6 @@
         status = "okay";
         compatible = "zmk,input-listener";
         device = <&trackball>;
-        input-processors = <&zip_temp_layer 4 10000>;
 
         gestures {
             layers = <7>;
